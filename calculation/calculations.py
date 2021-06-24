@@ -1,16 +1,17 @@
 import pandas as df
 
+
 def price_earnings_ratio(info):
-    market_price = info['regularMarketPrice']
-    trailing_eps = info['trailingEps']
-    if trailing_eps is None or trailing_eps < 0:
+    if 'trailingEps' not in info.keys() or info['trailingEps'] is None or info['trailingEps'] < 0:
         return "N/A"
     else:
+        market_price = info['regularMarketPrice']
+        trailing_eps = info['trailingEps']
         return format_two_decimals(market_price / trailing_eps)
 
 
 def price_book_ratio(info):
-    if info['priceToBook'] is None:
+    if 'priceToBook' not in info.keys() or info['priceToBook'] is None:
         return "N/A"
     else:
         return format_two_decimals(info['priceToBook'])
@@ -26,7 +27,10 @@ def price_change_percentage(info):
 
 
 def market_cap(info):
-    return format_millions_billions(info['marketCap'])
+    if info['marketCap'] is None:
+        return "N/A"
+    else:
+        return format_millions_billions(info['marketCap'])
 
 
 def forward_pe(info):
@@ -37,7 +41,7 @@ def forward_pe(info):
 
 
 def peg_ratio(info):
-    if info["pegRatio"] is None:
+    if 'pegRatio' not in info.keys() or info["pegRatio"] is None:
         return "N/A"
     else:
         return format_two_decimals(info["pegRatio"])
@@ -54,21 +58,21 @@ def dividend_rate(info):
     if info["dividendRate"] is None:
         return "N/A"
     else:
-        return format_two_decimals(info["dividendRate"])
+        return format_two_decimals(info["dividendRate"]) + "$"
 
 
 def dividend_yield(info):
     if info["dividendYield"] is None:
         return "N/A"
     else:
-        return format_percentage(info["dividendYield"])
+        return format_percentage_str(info["dividendYield"])
 
 
 def payout_ratio(info):
     if info["payoutRatio"] is None:
         return "N/A"
     else:
-        return format_percentage(info["payoutRatio"])
+        return format_percentage_str(info["payoutRatio"])
 
 
 def price(info):
@@ -144,29 +148,39 @@ def fifty_two_week_low(info):
 
 
 def fifty_two_week_change(info):
-    if info["52WeekChange"] is None:
+    if '52WeekChange' not in info.keys() or info["52WeekChange"] is None:
         return "N/A"
     else:
-        return format_change(format_two_decimals(info["52WeekChange"] * 100)) + "%"
+        return format_two_decimals(info["52WeekChange"] * 100) + "%"
 
 
 def get_value(ticker: df.DataFrame, field, index):
     if field in ticker.columns:
-        return format_millions_billions(ticker.iloc[index][field])
-    else:
-        return "-"
+        value = ticker.iloc[index][field]
+        if str(value) != "nan":
+            return format_millions_billions(value)
+    return "-"
+
+
+def get_value_percentage(ticker: df.DataFrame, field, index):
+    if field in ticker.columns:
+        value = ticker.iloc[index][field]
+        if str(value) != "nan":
+            return str(value) + "%"
+    return "-"
 
 
 def get_value_subtract(ticker: df.DataFrame, field1, field2, index):
     if field1 and field2 in ticker.columns:
-        return format_millions_billions(ticker.iloc[index][field1]-ticker.iloc[index][field2])
+        return format_millions_billions(ticker.iloc[index][field1] - ticker.iloc[index][field2])
     else:
         return "-"
 
 
 def get_value_subtract_three(ticker: df.DataFrame, field1, field2, field3, index):
     if field1 and field2 and field3 in ticker.columns:
-        return format_millions_billions(ticker.iloc[index][field1]-ticker.iloc[index][field2] - ticker.iloc[index][field3])
+        return format_millions_billions(
+            ticker.iloc[index][field1] - ticker.iloc[index][field2] - ticker.iloc[index][field3])
     elif field1 and field2 in ticker.columns:
         return format_millions_billions(ticker.iloc[index][field1] - ticker.iloc[index][field2])
     elif field1 and field3 in ticker.columns:
@@ -177,6 +191,11 @@ def get_value_subtract_three(ticker: df.DataFrame, field1, field2, field3, index
         return "-"
 
 
+def calculate_percentage_growth(ticker: df.DataFrame, field: str, index: int):
+    return format_percentage(
+        (ticker.iloc[index][field] - ticker.iloc[index - 1][field]) / ticker.iloc[index - 1][field])
+
+
 def format_two_decimals(number):
     return "{:.2f}".format(number)
 
@@ -185,19 +204,16 @@ def format_three_decimals(number):
     return "{:.3f}".format(number)
 
 
-def format_percentage(percentage):
-    return "{:.2f}".format(percentage * 100) + "%"
+def format_percentage_str(number):
+    return "{:.2f}".format(number * 100) + "%"
+
+
+def format_percentage(number):
+    return round(number * 100, 2)
 
 
 def format_millions_billions(number: int):
-    if number > 1000000000:
+    if abs(number) > 1000000000:
         return str(format_three_decimals(number / 1000000000)) + "B"
     else:
         return str(format_three_decimals(number / 1000000)) + "M"
-
-
-def format_change(change):
-    if float(change) >= 0:
-        return "+" + str(change)
-    else:
-        return "-" + str(change)

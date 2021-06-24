@@ -1,35 +1,22 @@
 {% extends 'base.html' %}
 
-{% block head %}
-    <title>Stock Analyzer</title>
-{% endblock %}
-
 {% block body %}
 
-        <div class="row justify-content-center aling-items-center">
-            <div class="card mtp-10 width-70p align-items-center transparent">
-                <div class="mlrp-2">
-                    <h1>Welcome to stock analyzer!</h1>
-                </div>
-            </div>
-        </div>
 
         <div class="container mtp-8">
             <div class="row justify-content-center align-items-center">
                 <div class="col-md-6 card transparent">
                     <div class="col-md-12">
                         <div class="lead text mtbp-5 mlrp-2">
-                            Stock analyzer sends you a report about top 5 and low 5 stocks by relative trading volume of S&P500 every day!
-                            Subscribe now!
+                            Sad to see you go.
                         </div>
-                        <form class="form mtp-5" action="/" method="post">
+                        <form class="form mtp-5" action="{{url_for('unsubscribe')}}" method="post">
                             <div class="form-group">
                                 <input type="email" name="email" id="email" placeholder="Enter email" class="form-control" required>
                             </div>
                             <div>
                             <div class="form-row mtbp-5">
-                                <input type="submit" name="submit" class="btn btn-color round mlrp-2" value="Subscribe">
-                                 <a class="btn btn-color round mlrp-2" href="{{url_for('unsubscribe')}}">Unsubscribe</a>
+                                <input type="submit" name="submit" class="btn btn-block btn-color round mlrp-2" value="Unsubscribe">
                             </div>
                             </div>
                         </form>

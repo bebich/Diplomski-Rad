@@ -1,84 +1,77 @@
-from flask import Flask, render_template, request, redirect
-from flask_sqlalchemy import SQLAlchemy
-from calculating_obv import *
-import smtplib
+import time
+import schedule
+from flask import render_template, request
+from model.database_service import *
+from calculation.calculating_obv import *
+from pdf_generator.pdf_generator import create_report
+from email_generator.email_generator import send_email
 import threading
-from pdf_creator import create_report
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+from config import app
 
 
-class Subscriber(db.Model):
-    __tablename__ = "subscribers"
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), nullable=False)
-
-
-db.create_all()
-
-
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == "POST":
-        email = request.form["email"]
+        email_form = request.form["email"]
         try:
-            subscriber = Subscriber(email=email)
-            db.session.add(subscriber)
-            db.session.commit()
-            return redirect("/")
+            existing_sub = get_subscriber(email_form)
+            if existing_sub is None:
+                save_subscriber(email_form)
+
+            return render_template('message_page.html', type=1)
         except:
-            return "Failed"
+            return render_template('message_page.html', type=3)
     else:
         return render_template('index.html')
 
-@app.route('/email')
-def send_email():
-    sorted_stocks = rank_stocks_by_volume()
-    top_10 = sorted_stocks.head(10)
-    bottom_10 = sorted_stocks.tail(10)
-    bottom_10 = bottom_10.sort_values(by="Volume Ratio", ascending=True)
 
-    msg = "Subject: Top 10 and Bottom 10 stocks! \n" \
-          "Top 10 stocks are: \n"
+@app.route("/unsubscribe", methods=['GET', 'POST'])
+def unsubscribe():
+    if request.method == "POST":
+        email_form = request.form["email"]
+        try:
+            existing_sub = get_subscriber(email_form)
+            if existing_sub is not None:
+                delete_subscriber(existing_sub)
+            return render_template('message_page.html', type=2)
+        except:
+            return render_template('message_page.html', type=3)
+    else:
+        return render_template('unsubscribe.html')
 
-    for i in range(len(top_10)):
-        msg += str(i+1) + ". " + top_10["Ticker"].iloc[i] + "\n"
 
-    msg += "\nBottom 10 stocks are: \n"
-
-    for i in range(len(bottom_10)):
-        msg += str(i+1) + ". " + bottom_10["Ticker"].iloc[i] + "\n"
-
-    with smtplib.SMTP("smtp.gmail.com") as connection:
-        connection.starttls()
-        connection.login(user="pythonudemy14@gmail.com", password="pythonudemy97")
-        connection.sendmail(from_addr="pythonudemy14@gmail.com", to_addrs="pythonudemy14@gmail.com", msg=msg)
-
-    return render_template("index.html")
+def job():
+    print("Creating report started")
+    create_folders()
+    get_data()
+    top_5 = get_top_5()
+    bottom_5 = get_bottom_5()
+    calculate_stocks_obv(top_5)
+    calculate_stocks_obv(bottom_5)
+    create_report(top_5, bottom_5)
+    subscribers = get_all_subscribers()
+    send_email(top_5, bottom_5, subscribers)
+    delete_folders()
+    print("Report created")
 
 
 def method():
     print("Starting Thread")
-    # get_sp500_data()
-    # top_10 = get_top_10()
-    # bottom_10 = get_bottom_10()
-    # for stock in top_10:
-    #     ticker = stock.info['symbol']
-    #     stock_pd = pd.read_csv("stocks_data\\" + ticker + ".csv")
-    #     calculate_obv(stock_pd, ticker)
-    # for stock in bottom_10:
-    #     ticker = stock.info['symbol']
-    #     stock_pd = pd.read_csv("stocks_data\\" + ticker + ".csv")
-    #     calculate_obv(stock_pd, ticker)
-    create_report()
-    # delete_graphs()
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
     print("Ending Thread")
 
 
+schedule.every().monday.at("00:00").do(job)
+schedule.every().tuesday.at("00:00").do(job)
+schedule.every().wednesday.at("00:00").do(job)
+schedule.every().thursday.at("10:50").do(job)
+schedule.every().friday.at("00:00").do(job)
+
 if __name__ == '__main__':
+    initialize_db()
     thread = threading.Thread(target=method)
     thread.start()
     app.run(debug=True, use_reloader=False)
