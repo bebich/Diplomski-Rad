@@ -2,8 +2,6 @@ import time
 import schedule
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-
-from model.database_service import *
 from calculation.calculating_obv import *
 from pdf_generator.pdf_generator import create_report
 from email_generator.email_generator import send_email
