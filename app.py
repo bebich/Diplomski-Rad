@@ -74,4 +74,4 @@ if __name__ == '__main__':
     initialize_db()
     thread = threading.Thread(target=method)
     thread.start()
-    app.run(debug=True, use_reloader=False)
+    # app.run()
