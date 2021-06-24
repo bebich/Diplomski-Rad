@@ -67,7 +67,7 @@ def method():
 schedule.every().monday.at("00:00").do(job)
 schedule.every().tuesday.at("00:00").do(job)
 schedule.every().wednesday.at("00:00").do(job)
-schedule.every().thursday.at("16:05").do(job)
+schedule.every().thursday.at("16:15").do(job)
 schedule.every().friday.at("00:00").do(job)
 
 if __name__ == '__main__':

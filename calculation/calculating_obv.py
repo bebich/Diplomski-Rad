@@ -28,8 +28,11 @@ def delete_folders():
 def get_sp500_data():
     for stock in sp500_list:
         stock_ticker = yf.Ticker(stock[0])
-        stock_data = stock_ticker.history(period="1y")
-        stock_data.to_csv("stocks_data\\" + stock[0] + ".csv")
+        try:
+            stock_data = stock_ticker.history(period="1y")
+            stock_data.to_csv("stocks_data\\" + stock[0] + ".csv")
+        except:
+            continue
         print("Done for ticker %s" % stock[0])
 
 
