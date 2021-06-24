@@ -7,6 +7,7 @@ from pdf_generator.pdf_generator import create_report
 from email_generator.email_generator import send_email
 import threading
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
