@@ -6,7 +6,7 @@ from calculation.calculating_obv import *
 from pdf_generator.pdf_generator import create_report
 from email_generator.email_generator import send_email
 import threading
-from config import app
+from application import app
 
 
 @app.route('/', methods=['GET', 'POST'])
