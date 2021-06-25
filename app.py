@@ -97,7 +97,7 @@ def method():
     print("Ending Thread")
 
 
-schedule.every(30).minutes.do(job)
+schedule.every(35).minutes.do(job)
 # schedule.every().monday.at("00:00").do(job)
 # schedule.every().tuesday.at("00:00").do(job)
 # schedule.every().wednesday.at("00:00").do(job)
