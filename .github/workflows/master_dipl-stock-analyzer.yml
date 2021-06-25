@@ -34,5 +34,5 @@ jobs:
       with:
         app-name: dipl-stock-analyzer
         slot-name: Production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BD5E7FD0867460EBACDBFB5049133DE }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_26BCADB6A37E4CD3918592A8CD73F46D }}
 
