@@ -36,9 +36,8 @@ def send_email(top_5, bottom_5, receivers):
 
     with smtplib.SMTP("smtp.gmail.com") as connection:
         connection.starttls()
-        for receiver in receivers:
-            connection.login(user=sender, password=password)
-            connection.sendmail(sender, receiver.email, "Text")
+        connection.login(user=sender, password=password)
+        connection.sendmail(sender, "bebek.filip@gmail.com", "Text")
 
 
 def append_list(body, stock_list):

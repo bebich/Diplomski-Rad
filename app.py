@@ -106,7 +106,6 @@ def method():
 # schedule.every().friday.at("14:07").do(job)
 
 if __name__ == '__main__':
-    initialize_db()
     thread = threading.Thread(target=method)
     thread.start()
     app.run()
