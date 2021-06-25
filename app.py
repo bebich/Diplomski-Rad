@@ -75,16 +75,16 @@ def unsubscribe():
 
 def job():
     print("Creating report started")
-    create_folders()
-    get_data()
-    top_5 = get_top_5()
-    bottom_5 = get_bottom_5()
-    calculate_stocks_obv(top_5)
-    calculate_stocks_obv(bottom_5)
-    create_report(top_5, bottom_5)
+    # create_folders()
+    # get_data()
+    # top_5 = get_top_5()
+    # bottom_5 = get_bottom_5()
+    # calculate_stocks_obv(top_5)
+    # calculate_stocks_obv(bottom_5)
+    # create_report(top_5, bottom_5)
     subscribers = get_all_subscribers()
-    send_email(top_5, bottom_5, subscribers)
-    delete_folders()
+    send_email([], [], subscribers)
+    # delete_folders()
     print("Report created")
 
 
@@ -97,7 +97,7 @@ def method():
     print("Ending Thread")
 
 
-schedule.every().day.at("01:00").do(job)
+schedule.every(2).minutes.do(job())
 # schedule.every().monday.at("00:00").do(job)
 # schedule.every().tuesday.at("00:00").do(job)
 # schedule.every().wednesday.at("00:00").do(job)
