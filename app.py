@@ -98,11 +98,12 @@ def method():
     print("Ending Thread")
 
 
-schedule.every().monday.at("00:00").do(job)
-schedule.every().tuesday.at("00:00").do(job)
-schedule.every().wednesday.at("00:00").do(job)
-schedule.every().thursday.at("16:15").do(job)
-schedule.every().friday.at("00:00").do(job)
+schedule.every(15).minutes.do(job)
+# schedule.every().monday.at("00:00").do(job)
+# schedule.every().tuesday.at("00:00").do(job)
+# schedule.every().wednesday.at("00:00").do(job)
+# schedule.every().thursday.at("16:15").do(job)
+# schedule.every().friday.at("00:00").do(job)
 
 if __name__ == '__main__':
     initialize_db()
