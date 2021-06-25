@@ -89,8 +89,8 @@ def job():
 
 def method():
     print("Starting Thread")
-    subscribers = get_all_subscribers()
-    send_email([], [], subscribers)
+    # subscribers = get_all_subscribers()
+    send_email([], [], [])
     # while True:
     #     schedule.run_pending()
     #     time.sleep(60)
