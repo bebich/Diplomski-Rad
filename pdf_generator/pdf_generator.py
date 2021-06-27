@@ -8,8 +8,6 @@ HEIGHT = 297
 
 
 def create_report(top_5, bottom_5):
-    print("TOP 5: ", top_5)
-    print("BOTTOM 5: ", bottom_5)
     pdf = FPDF()
     cover_page(pdf)
     list_page(pdf, "Top 5", top_5)

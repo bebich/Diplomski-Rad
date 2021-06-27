@@ -41,7 +41,6 @@ def unsubscribe():
 
 
 def job():
-    print("Creating report started")
     create_folders()
     get_data()
     top_5 = get_top_5()
@@ -52,23 +51,20 @@ def job():
     subscribers = get_all_subscribers()
     send_email(top_5, bottom_5, subscribers)
     delete_folders()
-    print("Report created")
 
 
 def method():
-    print("Starting Thread")
     while True:
         schedule.run_pending()
         time.sleep(60)
 
-    print("Ending Thread")
 
+schedule.every().monday.at("02:00").do(job)
+schedule.every().tuesday.at("02:00").do(job)
+schedule.every().wednesday.at("02:00").do(job)
+schedule.every().thursday.at("02:00").do(job)
+schedule.every().friday.at("02:00").do(job)
 
-schedule.every().monday.at("00:00").do(job)
-schedule.every().tuesday.at("00:00").do(job)
-schedule.every().wednesday.at("00:00").do(job)
-schedule.every().thursday.at("10:50").do(job)
-schedule.every().friday.at("00:00").do(job)
 
 if __name__ == '__main__':
     initialize_db()

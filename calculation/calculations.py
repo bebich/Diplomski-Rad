@@ -192,8 +192,12 @@ def get_value_subtract_three(ticker: df.DataFrame, field1, field2, field3, index
 
 
 def calculate_percentage_growth(ticker: df.DataFrame, field: str, index: int):
-    return format_percentage(
-        (ticker.iloc[index][field] - ticker.iloc[index - 1][field]) / ticker.iloc[index - 1][field])
+    perc_growth = (ticker.iloc[index][field] - ticker.iloc[index - 1][field]) / ticker.iloc[index - 1][field]
+    if ticker.iloc[index-1][field] < 0:
+        perc_growth = perc_growth * -1
+    elif ticker.iloc[index-1][field] == 0:
+        return "-"
+    return format_percentage(perc_growth)
 
 
 def format_two_decimals(number):

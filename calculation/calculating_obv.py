@@ -28,9 +28,8 @@ def delete_folders():
 def get_sp500_data():
     for stock in sp500_list:
         stock_ticker = yf.Ticker(stock[0])
-        stock_data = stock_ticker.history(period="4m")
+        stock_data = stock_ticker.history(period="1y")
         stock_data.to_csv("stocks_data\\" + stock[0] + ".csv")
-        print("Done for ticker %s" % stock[0])
 
 
 def rank_stocks_by_volume():
@@ -100,7 +99,6 @@ def calculate_obv(stock_df: pd.DataFrame, ticker: str):
         obv_df = obv_df.append({"Date": row["Date"], "OBV": volume_sum}, ignore_index=True)
         prev_price = price
     obv_df.to_csv("stocks_obv\\" + ticker + ".csv")
-    print("Done obv for: ", ticker)
 
 
 def get_data():

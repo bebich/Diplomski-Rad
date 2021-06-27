@@ -53,7 +53,6 @@ def obv_chart(ticker: str):
 
 
 def revenue_growth_chart(dataframe: pd.DataFrame, ticker):
-    print(ticker)
     x_axis = [int(x) for x in dataframe["Years"]]
 
     plt.title("Revenue growth last 3 years", fontsize=24)
@@ -136,7 +135,7 @@ def total_liabilities_ratio_chart(dataframe, ticker, years):
 
 
 def operating_cash_flow_chart(dataframe, ticker, years):
-    ax = dataframe["Total Cash From Operating Activities"].plot.bar(figsize=(10, 6), rot=0, fontsize=12)
+    ax = dataframe["Total Cash From Operating Activities"].plot(kind='bar', figsize=(10, 6), rot=0, fontsize=12)
     plt.title("Operating cash flow", fontsize=22)
     ax.set_xticklabels(years)
     ax.yaxis.set_major_formatter(format_func)
